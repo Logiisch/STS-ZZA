@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<zza-config>
+    <!-- Regex für (Güter-)Züge, die nur mit "Achtung Zugdurchfahrt" angezeigt / angesagt werden sollen -->
+    <ignore-pattern>^(TEC|CS|RoLa|Lr|LR|IKL|CB|Tfzf|Ersatzlok|FE|CIL|FIR|RF|GZ|DGS|FR|FZ|LT|DNG|GC).*</ignore-pattern>
+    <!-- Regex für (Fern-)züge bei denen auch die Zugnummer mit angesagt wird -->
+    <fernzug-pattern>^([IE]CE?|CNL|NZ|EN).*</fernzug-pattern>
+
+    <ansagen>
+        <durchfahrt>
+            Auf Gleis %GLEIS% Vorsicht, ein Zug fährt durch. Bitte zurückbleiben.
+        </durchfahrt>
+
+        <einfahrt-endend>
+            Auf Gleis %GLEIS% Einfahrt: %ZUG% von %VON%. Ankunft %AN% Uhr . Dieser Zug endet hier.
+            Bitte nicht einsteigen. Vorsicht bei der Einfahrt!
+        </einfahrt-endend>
+
+        <einfahrt-bereitstellung>
+            Auf Gleis %GLEIS% wird bereitgestellt: %ZUG% von %VON% zur Weiterfahrt nach %NACH% %VIAS%. Abfahrt %AB% Uhr . Vorsicht bei der Einfahrt!
+        </einfahrt-bereitstellung>
+
+        <einfahrt-normal>
+            Auf Gleis %GLEIS% Einfahrt: %ZUG% von %VON% zur Weiterfahrt nach %NACH% %VIAS%. Abfahrt %AB% Uhr . Vorsicht bei der Einfahrt!
+        </einfahrt-normal>
+
+        <stehend>
+            Auf Gleis %GLEIS% steht: %ZUG% von %VON% zur Weiterfahrt nach %NACH% %VIAS%. Abfahrt %AB% Uhr .
+        </stehend>
+
+        <vias>
+            via %STATIONEN%
+        </vias>
+
+        <zuglauf-normal>
+            nach %ENDE% Planmäßige Abfahrtszeit %AB% Uhr
+        </zuglauf-normal>
+
+        <zuglauf-ende>
+            von %START% Planmäßige Ankunftszeit %ZEIT% Uhr
+        </zuglauf-ende>
+
+        <gleiswechsel-endend-normal>
+            Auf Gleis %PLANGLEIS% Bitte beachten sie zu %ZUG% von %VON% Planmäßige Ankunftszeit %AN% Uhr: Dieser Zug verkehrt heute außerplanmäßig von Gleis %GLEIS% .
+        </gleiswechsel-endend-normal>
+
+        <gleiswechsel-endend-verspaetet>
+            Auf Gleis %PLANGLEIS% Bitte beachten sie zu %ZUG% von %VON% Planmäßige Ankunftszeit %AN% Uhr, heute voraussichtlich %AN_PROGNOSE% Uhr: Dieser Zug verkehrt heute außerplanmäßig von Gleis %GLEIS% .
+        </gleiswechsel-endend-verspaetet>
+
+        <gleiswechsel-normal-normal>
+            Auf Gleis %PLANGLEIS% Bitte beachten sie zu %ZUG% nach %NACH% Planmäßige Abfahrtszeit %AB% Uhr: Dieser Zug verkehrt heute außerplanmäßig von Gleis %GLEIS% .
+        </gleiswechsel-normal-normal>
+
+        <gleiswechsel-normal-verspaetet>
+            Auf Gleis %PLANGLEIS% Bitte beachten sie zu %ZUG% nach %NACH% Planmäßige Abfahrtszeit %AB% Uhr, heute voraussichtlich %AB_PROGNOSE% Uhr: Dieser Zug verkehrt heute außerplanmäßig von Gleis %GLEIS% .
+        </gleiswechsel-normal-verspaetet>
+
+        <verspaetung-endend>
+            Auf Gleis %GLEIS% Bitte beachten sie zu %ZUG% von %VON%, planmäßige Ankunftszeit %AN% Uhr: Dieser Zug wird heute voraussichtlich %VERSPAETUNG% später eintreffen. Wir bitten um Verständnis.
+        </verspaetung-endend>
+
+        <verspaetung-normal>
+            Auf Gleis %GLEIS% Bitte beachten sie zu %ZUG% nach %NACH%, planmäßige Abfahrtszeit %AB% Uhr: Dieser Zug wird heute voraussichtlich %VERSPAETUNG% später eintreffen. Wir bitten um Verständnis.
+        </verspaetung-normal>
+
+        <halt-endend>
+            Auf Gleis %GLEIS% Willkommen in %BAHNHOF%. Eingefahrener %ZUG% endet hier.
+        </halt-endend>
+
+        <halt-normal>
+            Auf Gleis %GLEIS% Willkommen in %BAHNHOF%. Eingefahrener %ZUG% fährt weiter nach %NACH% %VIAS%.
+        </halt-normal>
+
+        <anschluesse>
+            Ihre nächsten Anschlüsse:
+        </anschluesse>
+
+        <anschluss-verspaetet>
+            Verspäteter %ZUG% nach %NACH% Abfahrt heute voraussichtlich %AB_PROGNOSE% Uhr von Gleis %GLEIS% .
+        </anschluss-verspaetet>
+
+        <anschluss-normal>
+            %ZUG% nach %NACH% Abfahrt %AB% Uhr von Gleis %GLEIS% .
+        </anschluss-normal>
+
+        <abfahrt>
+            Auf Gleis %GLEIS% zum %ZUG% nach %NACH% bitte einsteigen. Vorsicht an den Türen. Der Zug fährt jetzt ab.
+        </abfahrt>
+    </ansagen>
+</zza-config>

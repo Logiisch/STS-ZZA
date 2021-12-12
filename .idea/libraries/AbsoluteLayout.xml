@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="AbsoluteLayout">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../stszza-2.0-bin(1)/stszza/lib/AbsoluteLayout.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../stszza-2.0-bin(1)/stszza/lib/beansbinding-1.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../stszza-2.0-bin(1)/stszza/lib/marytts-lang-de-5.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../stszza-2.0-bin(1)/stszza/lib/marytts-runtime-5.1.1-jar-with-dependencies.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../stszza-2.0-bin(1)/stszza/lib/stspluginlib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../stszza-2.0-bin(1)/stszza/lib/tagsoup-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../stszza-2.0-bin(1)/stszza/lib/voice-bits1-hsmm-5.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
