@@ -21,8 +21,8 @@ import js.java.stspluginlib.PluginClient.ZugFahrplanZeile;
 public class ZzaManager implements StsListener {
    private int aNum = 0;
    private Bahnhof lastBhf;
-   private final Map<String, Zza> windows = new HashMap();
-   private boolean minutengenau;
+   private final Map<String, Zza> windows = new HashMap<>();
+   private final boolean minutengenau;
 
    public ZzaManager(boolean minutengenau) {
       this.minutengenau = minutengenau;
@@ -53,32 +53,29 @@ public class ZzaManager implements StsListener {
    }
 
    public void naechsterZug(String gleis, Bahnhof bahnhof, int zid, DataCache cache) {
-      RewrittenDetails details = Rewriter.getInstance().rewrite((ZugDetails)cache.getDetailCache().get(zid), bahnhof);
-      List<ZugFahrplanZeile> plan = (List)cache.getFahrplaene().get(zid);
+      RewrittenDetails details = Rewriter.getInstance().rewrite(cache.getDetailCache().get(zid), bahnhof);
+      List<ZugFahrplanZeile> plan = cache.getFahrplaene().get(zid);
       int startIndex = 0;
 
       for(int i = 0; i < plan.size(); ++i) {
-         if (((ZugFahrplanZeile)plan.get(i)).gleis.equals(gleis)) {
+         if (plan.get(i).gleis.equals(gleis)) {
             startIndex = i + 1;
             break;
          }
       }
 
-      if (!((ZugFahrplanZeile)plan.get(startIndex - 1)).flags.hasFlag('D') && !Pattern.matches(Main.CONFIG.getIgnorePattern(), ((ZugDetails)cache.getDetailCache().get(zid)).name)) {
-         if (!Pattern.matches(bahnhof.getEndeRegex(), ((ZugDetails)cache.getDetailCache().get(zid)).nach) && !Pattern.matches(bahnhof.getEndeRegex(), details.nach)) {
+      if (!plan.get(startIndex - 1).flags.hasFlag('D') && !Pattern.matches(Main.CONFIG.getIgnorePattern(), cache.getDetailCache().get(zid).name)) {
+         if (!Pattern.matches(bahnhof.getEndeRegex(), cache.getDetailCache().get(zid).nach) && !Pattern.matches(bahnhof.getEndeRegex(), details.nach)) {
             String vias = "";
             if (details.rewritten) {
                vias = details.vias;
             } else {
                for(int i = startIndex; i < startIndex + 3; ++i) {
                   String viaBhf = null;
-                  if (viaBhf == null && plan.size() > i) {
-                     vias = vias + " - " + ((ZugFahrplanZeile)plan.get(i)).gleis;
+                  if (plan.size() > i) {
+                     vias = vias + " - " + plan.get(i).gleis;
                   }
 
-                  if (viaBhf != null && ((String)viaBhf).length() > 0) {
-                     vias = vias + " - " + viaBhf;
-                  }
                }
 
                if (vias.length() > 0) {
@@ -86,7 +83,7 @@ public class ZzaManager implements StsListener {
                }
             }
 
-            StringBuilder infoString = new StringBuilder("");
+            StringBuilder infoString = new StringBuilder();
             if (details.verspaetung >= 1) {
                infoString.append("+++ ");
                infoString.append(Util.verspaetungsText(details.verspaetung, this.minutengenau, "etwa "));
@@ -94,7 +91,7 @@ public class ZzaManager implements StsListener {
                infoString.append(" +++");
             }
 
-            ((Zza)this.windows.get(gleis)).update(details.name, details.nach, ((ZugFahrplanZeile)plan.get(startIndex - 1)).getFormattedAb(), vias, infoString.toString());
+            this.windows.get(gleis).update(details.name, details.nach, plan.get(startIndex - 1).getFormattedAb(), vias, infoString.toString());
          } else {
             StringBuilder infoString = new StringBuilder("+++ Bitte nicht einsteigen");
             if (details.verspaetung >= 1) {
@@ -104,10 +101,10 @@ public class ZzaManager implements StsListener {
             }
 
             infoString.append(" +++");
-            ((Zza)this.windows.get(gleis)).update(details.name, "Von " + details.von, ((ZugFahrplanZeile)plan.get(startIndex - 1)).getFormattedAn(), "Zug endet hier.", infoString.toString());
+            this.windows.get(gleis).update(details.name, "Von " + details.von, plan.get(startIndex - 1).getFormattedAn(), "Zug endet hier.", infoString.toString());
          }
       } else {
-         ((Zza)this.windows.get(gleis)).update("", "Achtung Zugdurchfahrt!", "", "", "");
+         this.windows.get(gleis).update("", "Achtung Zugdurchfahrt!", "", "", "");
       }
 
    }
@@ -125,6 +122,6 @@ public class ZzaManager implements StsListener {
    }
 
    public void keinZug(String gleis) {
-      ((Zza)this.windows.get(gleis)).update("", "", "", "", "");
+      this.windows.get(gleis).update("", "", "", "", "");
    }
 }

@@ -6,9 +6,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.Toolkit;
-import javax.swing.GroupLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
@@ -28,7 +26,6 @@ public class ZzaSmall extends Zza {
    private JLabel lblVias;
    private JLabel lblZug;
    private JLabel lblZugZiel;
-   private BindingGroup bindingGroup;
 
    public ZzaSmall() {
       this.initComponents();
@@ -40,7 +37,7 @@ public class ZzaSmall extends Zza {
    }
 
    private void initComponents() {
-      this.bindingGroup = new BindingGroup();
+      BindingGroup bindingGroup = new BindingGroup();
       this.jPanel1 = new JPanel();
       this.lblZugZiel = new JLabel();
       this.lblGleis = new JLabel();
@@ -49,7 +46,7 @@ public class ZzaSmall extends Zza {
       this.lblVias = new JLabel();
       this.jPanel2 = new JPanel();
       this.lblInfoText = new MarqueeLabel();
-      this.setDefaultCloseOperation(3);
+      this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
       this.setTitle("Zugzielanzeiger");
       this.setAlwaysOnTop(true);
       this.setBackground(new Color(102, 102, 255));
@@ -57,7 +54,7 @@ public class ZzaSmall extends Zza {
       this.getContentPane().setLayout(new AbsoluteLayout());
       this.jPanel1.setBackground(new Color(34, 35, 117));
       Binding binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${preferredSize}"), this.jPanel1, BeanProperty.create("preferredSize"));
-      this.bindingGroup.addBinding(binding);
+      bindingGroup.addBinding(binding);
       this.jPanel1.setLayout(new AbsoluteLayout());
       this.lblZugZiel.setFont(new Font("Tahoma", 1, 14));
       this.lblZugZiel.setForeground(new Color(255, 255, 255));
@@ -91,7 +88,7 @@ public class ZzaSmall extends Zza {
       jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel2Layout.createSequentialGroup().addComponent(this.lblInfoText, -1, -1, 32767).addContainerGap()));
       this.jPanel1.add(this.jPanel2, new AbsoluteConstraints(70, 8, 200, 10));
       this.getContentPane().add(this.jPanel1, new AbsoluteConstraints(0, 0, 320, 60));
-      this.bindingGroup.bind();
+      bindingGroup.bind();
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       this.setBounds((screenSize.width - 331) / 2, (screenSize.height - 92) / 2, 331, 92);
    }

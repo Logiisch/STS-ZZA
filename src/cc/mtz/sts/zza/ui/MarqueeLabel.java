@@ -33,8 +33,8 @@ public class MarqueeLabel extends JLabel {
    }
 
    protected void paintComponent(Graphics g) {
-      g.translate((int)((Long.MAX_VALUE - System.currentTimeMillis()) / 20L % (long)(this.getWidth() * 2)) - this.getWidth(), 0);
+      g.translate((int)((Long.MAX_VALUE - System.currentTimeMillis()) / MARQUEE_SPEED_DIV % (long)(this.getWidth() * 2)) - this.getWidth(), 0);
       super.paintComponent(g);
-      this.repaint(5L);
+      this.repaint(REPAINT_WITHIN_MS);
    }
 }

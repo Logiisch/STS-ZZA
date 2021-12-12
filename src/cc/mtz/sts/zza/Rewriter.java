@@ -32,7 +32,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class Rewriter {
    private final boolean fallbackToRis;
    private static Rewriter instance;
-   private StellwerkFile config;
+   private final StellwerkFile config;
 
    public static void init(StellwerkFile config, boolean fallbackToRis) {
       instance = new Rewriter(config, fallbackToRis);
@@ -54,20 +54,20 @@ public class Rewriter {
    public RewrittenDetails rewrite(ZugDetails details, Bahnhof currentBhf) {
       RewrittenDetails ret = new RewrittenDetails(details);
       boolean rewritten = false;
-      Iterator var5 = this.config.getRewrites().iterator();
+      Iterator<ZugRewrite> var5 = this.config.getRewrites().iterator();
 
       Iterator var8;
       while(var5.hasNext()) {
-         ZugRewrite rewrite = (ZugRewrite)var5.next();
+         ZugRewrite rewrite = var5.next();
          if (rewrite.matches(details)) {
             rewritten = true;
             ret = rewrite.rewrite(details);
             if (rewrite.getVias() != null && rewrite.getVias().size() > 0) {
-               List<String> finalVias = new LinkedList();
+               List<String> finalVias = new LinkedList<>();
                var8 = rewrite.getVias().iterator();
 
                while(var8.hasNext()) {
-                  String via = (String)var8.next();
+                  String via = (String) var8.next();
                   finalVias.add(via);
                   if (via.equals(currentBhf.getName())) {
                      finalVias.clear();
@@ -75,10 +75,8 @@ public class Rewriter {
                }
 
                StringBuilder viaString = new StringBuilder();
-               Iterator var24 = finalVias.iterator();
 
-               while(var24.hasNext()) {
-                  String via = (String)var24.next();
+               for (String via : finalVias) {
                   viaString.append(" - ");
                   viaString.append(via);
                }
@@ -111,7 +109,7 @@ public class Rewriter {
 
                         for(i = startIndex; i < parser.getVias().size() - 1; i += interval) {
                            viaString.append(" - ");
-                           viaString.append((String)parser.getVias().get(i));
+                           viaString.append(parser.getVias().get(i));
                         }
 
                         if (viaString.length() > 3) {
@@ -124,7 +122,7 @@ public class Rewriter {
 
                      while(var8.hasNext()) {
                         Bahnhof bahnhof = (Bahnhof)var8.next();
-                        if (((String)parser.getVias().get(i)).equals(bahnhof.getName())) {
+                        if (parser.getVias().get(i).equals(bahnhof.getName())) {
                            startIndex = i + 1;
                         }
                      }
@@ -137,20 +135,8 @@ public class Rewriter {
             } else {
                Logger.getLogger(Rewriter.class.getName()).log(Level.WARNING, "Error fetching from RIS - Parsing not successful");
             }
-         } catch (MalformedURLException var11) {
+         } catch (SAXException | IOException | TransformerException | ParserConfigurationException | ParseException var11) {
             Logger.getLogger(Rewriter.class.getName()).log(Level.WARNING, "Error fetching from RIS", var11);
-         } catch (SAXException var12) {
-            Logger.getLogger(Rewriter.class.getName()).log(Level.WARNING, "Error fetching from RIS", var12);
-         } catch (IOException var13) {
-            Logger.getLogger(Rewriter.class.getName()).log(Level.WARNING, "Error fetching from RIS", var13);
-         } catch (TransformerConfigurationException var14) {
-            Logger.getLogger(Rewriter.class.getName()).log(Level.WARNING, "Error fetching from RIS", var14);
-         } catch (TransformerException var15) {
-            Logger.getLogger(Rewriter.class.getName()).log(Level.WARNING, "Error fetching from RIS", var15);
-         } catch (ParserConfigurationException var16) {
-            Logger.getLogger(Rewriter.class.getName()).log(Level.WARNING, "Error fetching from RIS", var16);
-         } catch (ParseException var17) {
-            Logger.getLogger(Rewriter.class.getName()).log(Level.WARNING, "Error fetching from RIS", var17);
          }
       }
 
@@ -158,7 +144,7 @@ public class Rewriter {
       return ret;
    }
 
-   private static void processRis(String zug, RisParser risHandler) throws ParseException, MalformedURLException, SAXException, IOException, TransformerConfigurationException, TransformerException, ParserConfigurationException {
+   private static void processRis(String zug, RisParser risHandler) throws ParseException, SAXException, IOException, TransformerException, ParserConfigurationException {
       String productClass;
       if (zug.startsWith("ICE ")) {
          productClass = "1";
@@ -176,7 +162,7 @@ public class Rewriter {
 
       DateFormatter df = new DateFormatter(new SimpleDateFormat("dd.MM.yy"));
       Calendar cal = Calendar.getInstance();
-      cal.set(6, cal.get(6) + 1);
+      cal.set(Calendar.DAY_OF_YEAR, cal.get(Calendar.DAY_OF_YEAR) + 1);
       URL url = new URL("http://mobile.bahn.de/bin/mobil/trainsearch.exe/dox?ld=96236&rt=1&use_realtime_filter=1&date=" + df.valueToString(cal.getTime()) + "&trainname=" + zug.replaceAll("[a-zA-Z ]", "") + "&stationFilter=80&start=Suchen&productClassFilter=" + productClass);
       URLConnection conn = url.openConnection();
       InputStream is = conn.getInputStream();
@@ -192,7 +178,7 @@ public class Rewriter {
 
       try {
          is.close();
-      } catch (Exception var11) {
+      } catch (Exception ignored) {
       }
 
       Parser parser = new Parser();
@@ -208,12 +194,12 @@ public class Rewriter {
       private Mode mode;
       private String startBhf;
       private String endBhf;
-      private List<String> vias;
+      private final List<String> vias;
 
       private RisParser() {
          this.chars = new StringBuilder();
          this.mode = Mode.NONE;
-         this.vias = new LinkedList();
+         this.vias = new LinkedList<>();
       }
 
       public void characters(char[] ch, int start, int length) throws SAXException {
@@ -222,13 +208,12 @@ public class Rewriter {
 
       public void endElement(String uri, String localName, String qName) throws SAXException {
          if (qName.equals("td")) {
-            switch(this.mode) {
-            case START_BHF:
-               this.startBhf = this.chars.toString().trim();
-               break;
-            case END_BHF:
-               this.endBhf = this.chars.toString().trim();
-               this.vias.add(this.chars.toString().trim());
+            switch (this.mode) {
+               case START_BHF -> this.startBhf = this.chars.toString().trim();
+               case END_BHF -> {
+                  this.endBhf = this.chars.toString().trim();
+                  this.vias.add(this.chars.toString().trim());
+               }
             }
          }
 
@@ -266,10 +251,10 @@ public class Rewriter {
          this();
       }
 
-      private static enum Mode {
+      private enum Mode {
          NONE,
          START_BHF,
-         END_BHF;
+         END_BHF
       }
    }
 }

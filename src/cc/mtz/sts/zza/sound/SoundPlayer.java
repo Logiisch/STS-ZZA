@@ -24,10 +24,10 @@ import marytts.exceptions.MaryConfigurationException;
 import marytts.exceptions.SynthesisException;
 
 public class SoundPlayer extends Thread {
-   private final Queue<PlayEntry> toPlay = new PriorityBlockingQueue();
-   private Map<String, String> replaces = new LinkedHashMap();
+   private final Queue<PlayEntry> toPlay = new PriorityBlockingQueue<>();
+   private final Map<String, String> replaces = new LinkedHashMap<>();
    private MaryInterface mary;
-   private static SoundPlayer instance = new SoundPlayer();
+   private static final SoundPlayer instance = new SoundPlayer();
 
    public static SoundPlayer getInstance() {
       return instance;
@@ -55,9 +55,9 @@ public class SoundPlayer extends Thread {
    }
 
    public void addText(Priority priority, String text) {
-      Entry replace;
-      for(Iterator var3 = this.replaces.entrySet().iterator(); var3.hasNext(); text = text.replaceAll((String)replace.getKey(), (String)replace.getValue())) {
-         replace = (Entry)var3.next();
+      Entry<String,String> replace;
+      for(Iterator<Entry<String,String>> var3 = this.replaces.entrySet().iterator(); var3.hasNext(); text = text.replaceAll(replace.getKey(), replace.getValue())) {
+         replace = var3.next();
       }
 
       synchronized(this.toPlay) {
@@ -92,13 +92,13 @@ public class SoundPlayer extends Thread {
                      this.wait();
                   }
                } catch (InterruptedException var31) {
-                  Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, (String)null, var31);
+                  Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, null, var31);
                }
             }
 
             String playText;
             synchronized(this.toPlay) {
-               playText = ((PlayEntry)this.toPlay.poll()).getText();
+               playText = (this.toPlay.poll()).getText();
             }
 
             inStream = this.mary.generateAudio(playText);
@@ -140,21 +140,15 @@ public class SoundPlayer extends Thread {
             line.stop();
             line.close();
             inStream.close();
-         } catch (LineUnavailableException var32) {
-            Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, (String)null, var32);
-         } catch (UnsupportedAudioFileException var33) {
-            Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, (String)null, var33);
-         } catch (IOException var34) {
-            Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, (String)null, var34);
-         } catch (SynthesisException var35) {
-            Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, (String)null, var35);
+         } catch (LineUnavailableException | UnsupportedAudioFileException | IOException | SynthesisException var32) {
+            Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, null, var32);
          } finally {
             try {
                if (inStream != null) {
                   inStream.close();
                }
             } catch (IOException var28) {
-               Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, (String)null, var28);
+               Logger.getLogger(SoundPlayer.class.getName()).log(Level.SEVERE, null, var28);
             }
 
          }
@@ -162,8 +156,8 @@ public class SoundPlayer extends Thread {
    }
 
    private static class PlayEntry implements Comparable<PlayEntry> {
-      private String text;
-      private Priority priority;
+      private final String text;
+      private final Priority priority;
 
       public PlayEntry(Priority priority, String text) {
          this.priority = priority;
@@ -179,9 +173,9 @@ public class SoundPlayer extends Thread {
       }
    }
 
-   public static enum Priority implements Comparable<Priority> {
+   public enum Priority implements Comparable<Priority> {
       HIGH,
       MEDIUM,
-      LOW;
+      LOW
    }
 }

@@ -7,17 +7,17 @@ import js.java.stspluginlib.PluginClient.ZugDetails;
 import js.java.stspluginlib.PluginClient.ZugFahrplanZeile;
 
 public class DataCache {
-   private Map<Integer, List<ZugFahrplanZeile>> fahrplaene = new HashMap();
-   private Map<String, List<ZugBelegung>> belegung = new HashMap();
-   private Map<Integer, ZugDetails> detailCache = new HashMap();
+   private Map<Integer, List<ZugFahrplanZeile>> fahrplaene = new HashMap<>();
+   private Map<String, List<ZugBelegung>> belegung = new HashMap<>();
+   private Map<Integer, ZugDetails> detailCache = new HashMap<>();
 
    public DataCache() {
    }
 
    public DataCache(DataCache toCopy) {
-      this.fahrplaene = new HashMap(toCopy.fahrplaene);
-      this.belegung = new HashMap(toCopy.belegung);
-      this.detailCache = new HashMap(toCopy.detailCache);
+      this.fahrplaene = new HashMap<>(toCopy.fahrplaene);
+      this.belegung = new HashMap<>(toCopy.belegung);
+      this.detailCache = new HashMap<>(toCopy.detailCache);
    }
 
    public void clear() {

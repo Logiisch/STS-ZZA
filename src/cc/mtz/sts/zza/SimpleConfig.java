@@ -7,10 +7,8 @@ import java.util.List;
 public class SimpleConfig extends StellwerkFile {
    public SimpleConfig(String bahnhof, List<String> bahnsteige) {
       StringBuilder gleiseRegex = new StringBuilder("^(");
-      Iterator var4 = bahnsteige.iterator();
 
-      while(var4.hasNext()) {
-         String bahnsteig = (String)var4.next();
+      for (String bahnsteig : bahnsteige) {
          gleiseRegex.append(bahnsteig);
          gleiseRegex.append("|");
       }

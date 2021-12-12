@@ -30,7 +30,7 @@ public class Main {
    public static void init(String host, StellwerkFile config, boolean zza, boolean ansage, boolean einfahrt, boolean anschluesse, boolean verspaetungen, boolean minutengenau, boolean ris) throws SAXException, ParserConfigurationException, IOException {
       SoundPlayer.getInstance().start();
       Rewriter.init(config, ris);
-      List<StsListener> listener = new LinkedList();
+      List<StsListener> listener = new LinkedList<>();
       if (zza) {
          listener.add(new ZzaManager(minutengenau));
       }
@@ -56,14 +56,8 @@ public class Main {
    public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException {
       try {
          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      } catch (ClassNotFoundException var9) {
-         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, (String)null, var9);
-      } catch (InstantiationException var10) {
-         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, (String)null, var10);
-      } catch (IllegalAccessException var11) {
-         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, (String)null, var11);
-      } catch (UnsupportedLookAndFeelException var12) {
-         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, (String)null, var12);
+      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException var9) {
+         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, var9);
       }
 
       CONFIG = new ConfigProvider(new File("config.xml"));
@@ -72,15 +66,11 @@ public class Main {
 
       try {
          client.connect("localhost");
-         EventQueue.invokeLater(new Runnable() {
-            public void run() {
-               selector.setVisible(true);
-            }
-         });
+         EventQueue.invokeLater(() -> selector.setVisible(true));
          synchronized(client) {
             try {
                client.wait();
-            } catch (InterruptedException var6) {
+            } catch (InterruptedException ignored) {
             }
          }
 

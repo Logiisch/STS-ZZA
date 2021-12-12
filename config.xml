@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <zza-config>
     <!-- Regex für (Güter-)Züge, die nur mit "Achtung Zugdurchfahrt" angezeigt / angesagt werden sollen -->
-    <ignore-pattern>^(TEC|CS|RoLa|Lr|LR|IKL|CB|Tfzf|Ersatzlok|FE|CIL|FIR|RF|GZ|DGS|FR|FZ|LT|DNG|GC).*</ignore-pattern>
+    <ignore-pattern>^(TEC|CS|RoLa|Lr|LR|IKL|CB|Tfzf|Ersatzlok|FE|CIL|FIR|RF|GZ|DGS|FR|FZ|LT|DNG|GC|Lok|BAUZ).*</ignore-pattern>
     <!-- Regex für (Fern-)züge bei denen auch die Zugnummer mit angesagt wird -->
     <fernzug-pattern>^([IE]CE?|CNL|NZ|EN).*</fernzug-pattern>
 

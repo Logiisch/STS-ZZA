@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class ConfigProvider extends DefaultHandler {
-   private Map<String, String> ansageTexte = new HashMap();
+   private final Map<String, String> ansageTexte = new HashMap<>();
    private String ignorePattern;
    private String fernzugPattern;
    private boolean minutengenau;
@@ -34,19 +34,19 @@ public class ConfigProvider extends DefaultHandler {
    }
 
    public String getAnsage(String name, RewrittenDetails details) {
-      return this.getAnsage(name, details, (ZugFahrplanZeile)null, (String)null, (String)null);
+      return this.getAnsage(name, details, null, null, null);
    }
 
    public String getAnsage(String name, RewrittenDetails details, ZugFahrplanZeile fpl) {
-      return this.getAnsage(name, details, fpl, (String)null, (String)null);
+      return this.getAnsage(name, details, fpl, null, null);
    }
 
    public String getAnsage(String name, RewrittenDetails details, ZugFahrplanZeile fpl, String vias) {
-      return this.getAnsage(name, details, fpl, vias, (String)null);
+      return this.getAnsage(name, details, fpl, vias, null);
    }
 
    public String getAnsage(String name, RewrittenDetails details, ZugFahrplanZeile fpl, String vias, String bahnhof) {
-      String ansage = (String)this.ansageTexte.get(name);
+      String ansage = this.ansageTexte.get(name);
       if (details != null) {
          ansage = ansage.replace("%ZUG%", Util.ansagenName(details.name));
          if (details.gleis != null) {
@@ -57,7 +57,7 @@ public class ConfigProvider extends DefaultHandler {
          ansage = ansage.replace("%NACH%", details.nach);
          ansage = ansage.replace("%VERSPAETUNG%", Util.verspaetungsText(details.verspaetung, this.minutengenau, ""));
          if (vias != null && vias.length() > 0) {
-            ansage = ansage.replace("%VIAS%", this.getAnsage("vias", (RewrittenDetails)null).replace("%STATIONEN%", vias));
+            ansage = ansage.replace("%VIAS%", this.getAnsage("vias", null).replace("%STATIONEN%", vias));
          } else {
             ansage = ansage.replace("%VIAS%", "");
          }

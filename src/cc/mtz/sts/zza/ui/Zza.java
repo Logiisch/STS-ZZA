@@ -21,7 +21,6 @@ import org.netbeans.lib.awtextra.AbsoluteConstraints;
 import org.netbeans.lib.awtextra.AbsoluteLayout;
 
 public class Zza extends JFrame {
-   private JPanel jPanel1;
    private JPanel jPanel2;
    private JLabel lblAbfahrt;
    private JLabel lblGleis;
@@ -29,7 +28,6 @@ public class Zza extends JFrame {
    private JLabel lblVias;
    private JLabel lblZug;
    private JLabel lblZugZiel;
-   private BindingGroup bindingGroup;
 
    public Zza() {
       this.initComponents();
@@ -41,8 +39,8 @@ public class Zza extends JFrame {
    }
 
    private void initComponents() {
-      this.bindingGroup = new BindingGroup();
-      this.jPanel1 = new JPanel();
+      BindingGroup bindingGroup = new BindingGroup();
+      JPanel jPanel1 = new JPanel();
       this.lblZugZiel = new JLabel();
       this.lblGleis = new JLabel();
       this.lblAbfahrt = new JLabel();
@@ -55,32 +53,32 @@ public class Zza extends JFrame {
       this.setAlwaysOnTop(true);
       this.setBackground(new Color(102, 102, 255));
       this.getContentPane().setLayout(new AbsoluteLayout());
-      this.jPanel1.setBackground(new Color(34, 35, 117));
-      Binding binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${preferredSize}"), this.jPanel1, BeanProperty.create("preferredSize"));
-      this.bindingGroup.addBinding(binding);
-      this.jPanel1.setLayout(new AbsoluteLayout());
+      jPanel1.setBackground(new Color(34, 35, 117));
+      Binding binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${preferredSize}"), jPanel1, BeanProperty.create("preferredSize"));
+      bindingGroup.addBinding(binding);
+      jPanel1.setLayout(new AbsoluteLayout());
       this.lblZugZiel.setFont(new Font("Tahoma", 1, 24));
       this.lblZugZiel.setForeground(new Color(255, 255, 255));
       this.lblZugZiel.setText("Zugziel");
-      this.jPanel1.add(this.lblZugZiel, new AbsoluteConstraints(86, 63, 317, -1));
+      jPanel1.add(this.lblZugZiel, new AbsoluteConstraints(86, 63, 317, -1));
       this.lblGleis.setFont(new Font("Tahoma", 0, 48));
       this.lblGleis.setForeground(new Color(255, 255, 255));
       this.lblGleis.setHorizontalAlignment(4);
       this.lblGleis.setText("XX");
       this.lblGleis.setHorizontalTextPosition(4);
-      this.jPanel1.add(this.lblGleis, new AbsoluteConstraints(410, 10, -1, 49));
+      jPanel1.add(this.lblGleis, new AbsoluteConstraints(410, 10, -1, 49));
       this.lblAbfahrt.setFont(new Font("Tahoma", 0, 18));
       this.lblAbfahrt.setForeground(new Color(255, 255, 255));
       this.lblAbfahrt.setText("Abfahrt");
-      this.jPanel1.add(this.lblAbfahrt, new AbsoluteConstraints(10, 11, -1, -1));
+      jPanel1.add(this.lblAbfahrt, new AbsoluteConstraints(10, 11, -1, -1));
       this.lblZug.setFont(new Font("Tahoma", 0, 12));
       this.lblZug.setForeground(new Color(255, 255, 255));
       this.lblZug.setText("Zug");
-      this.jPanel1.add(this.lblZug, new AbsoluteConstraints(10, 37, -1, -1));
+      jPanel1.add(this.lblZug, new AbsoluteConstraints(10, 37, -1, -1));
       this.lblVias.setFont(new Font("Tahoma", 0, 12));
       this.lblVias.setForeground(new Color(255, 255, 255));
       this.lblVias.setText("Vias");
-      this.jPanel1.add(this.lblVias, new AbsoluteConstraints(86, 37, -1, -1));
+      jPanel1.add(this.lblVias, new AbsoluteConstraints(86, 37, -1, -1));
       this.jPanel2.setBackground(new Color(255, 255, 255));
       this.lblInfoText.setBackground(new Color(255, 255, 255));
       this.lblInfoText.setText("Infotext");
@@ -88,9 +86,9 @@ public class Zza extends JFrame {
       this.jPanel2.setLayout(jPanel2Layout);
       jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING).addComponent(this.lblInfoText, Alignment.TRAILING, -1, 317, 32767));
       jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING).addGroup(jPanel2Layout.createSequentialGroup().addComponent(this.lblInfoText).addContainerGap(1, 32767)));
-      this.jPanel1.add(this.jPanel2, new AbsoluteConstraints(86, 11, -1, 15));
-      this.getContentPane().add(this.jPanel1, new AbsoluteConstraints(0, 0, 480, 123));
-      this.bindingGroup.bind();
+      jPanel1.add(this.jPanel2, new AbsoluteConstraints(86, 11, -1, 15));
+      this.getContentPane().add(jPanel1, new AbsoluteConstraints(0, 0, 480, 123));
+      bindingGroup.bind();
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       this.setBounds((screenSize.width - 493) / 2, (screenSize.height - 157) / 2, 493, 157);
    }

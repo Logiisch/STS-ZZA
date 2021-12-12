@@ -21,7 +21,7 @@ public class ZugBelegung {
          }
 
          if (o1.zug != null) {
-            o1time += (long)(o1.zug.verspaetung * '\uea60');
+            o1time += (o1.zug.verspaetung * '\uea60');
          }
 
          long o2time = o2.zeile.an;
@@ -30,7 +30,7 @@ public class ZugBelegung {
          }
 
          if (o2.zug != null) {
-            o2time += (long)(o2.zug.verspaetung * '\uea60');
+            o2time += (o2.zug.verspaetung * '\uea60');
          }
 
          return (int)(o1time - o2time);

@@ -16,12 +16,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class StellwerkFile extends DefaultHandler {
-   protected List<ZugRewrite> rewrites = new LinkedList();
+   protected List<ZugRewrite> rewrites = new LinkedList<>();
    private ZugRewrite currentRewrite;
    protected Map<String, String> soundReplaces;
-   protected List<Bahnhof> bahnhoefe = new LinkedList();
+   protected List<Bahnhof> bahnhoefe = new LinkedList<>();
    private String crFind;
-   private String crReplace;
    private StringBuilder chars = new StringBuilder();
 
    public StellwerkFile(File file) throws SAXException, ParserConfigurationException, IOException {
@@ -31,7 +30,7 @@ public class StellwerkFile extends DefaultHandler {
    }
 
    protected StellwerkFile() {
-      this.soundReplaces = new LinkedHashMap();
+      this.soundReplaces = new LinkedHashMap<>();
    }
 
    public List<ZugRewrite> getRewrites() {
@@ -52,8 +51,8 @@ public class StellwerkFile extends DefaultHandler {
       } else if (qName.equals("via")) {
          this.currentRewrite.getVias().add(this.chars.toString());
       } else if (qName.equals("replace")) {
-         this.crReplace = this.chars.toString();
-         this.soundReplaces.put(this.crFind, this.crReplace);
+         String crReplace = this.chars.toString();
+         this.soundReplaces.put(this.crFind, crReplace);
       }
 
    }
@@ -67,7 +66,7 @@ public class StellwerkFile extends DefaultHandler {
       if (qName.equals("rewrite")) {
          this.currentRewrite = new ZugRewrite(attributes.getValue(uri, "zug"), attributes.getValue(uri, "simstart"), attributes.getValue(uri, "simende"), attributes.getValue(uri, "start"), attributes.getValue(uri, "ende"), new LinkedList());
       } else if (qName.equals("soundreplaces")) {
-         this.soundReplaces = new LinkedHashMap();
+         this.soundReplaces = new LinkedHashMap<>();
       } else if (qName.equals("replace")) {
          this.crFind = attributes.getValue(uri, "find");
       } else if (qName.equals("bahnhof")) {

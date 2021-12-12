@@ -25,13 +25,13 @@ public class PluginClientImpl extends PluginClient {
    private final StellwerkFile config;
    private final List<StsListener> listener;
    private boolean ready = true;
-   private DataCache currentCache;
+   private final DataCache currentCache;
    private DataCache lastRunCache;
    private Set<Integer> zuegeZuVerarbeiten;
-   private Map<String, Set<String>> einfahrtGemeldet = new HashMap();
-   private Map<String, Set<String>> abfahrtGemeldet = new HashMap();
-   private Map<String, Set<String>> haltGemeldet = new HashMap();
-   private Map<Integer, String> einfahrtsGleise = new HashMap();
+   private final Map<String, Set<String>> einfahrtGemeldet = new HashMap<>();
+   private final Map<String, Set<String>> abfahrtGemeldet = new HashMap<>();
+   private final Map<String, Set<String>> haltGemeldet = new HashMap<>();
+   private final Map<Integer, String> einfahrtsGleise = new HashMap<>();
 
    public PluginClientImpl(String name, String author, String version, String text, StellwerkFile config, List<StsListener> listener) {
       super(name, author, version, text);
@@ -57,12 +57,12 @@ public class PluginClientImpl extends PluginClient {
    }
 
    protected void response_bahnsteigliste(HashMap<String, HashSet<String>> bl) {
-      List<String> keys = new ArrayList(bl.keySet());
+      List<String> keys = new ArrayList<>(bl.keySet());
       Collections.sort(keys);
 
       label36:
       for(int bhf = 0; bhf < this.config.getBahnhoefe().size(); ++bhf) {
-         Iterator var4 = keys.iterator();
+         Iterator<String> var4 = keys.iterator();
 
          while(true) {
             String bahnsteig;
@@ -71,14 +71,11 @@ public class PluginClientImpl extends PluginClient {
                   continue label36;
                }
 
-               bahnsteig = (String)var4.next();
-            } while(!Pattern.matches(((Bahnhof)this.config.getBahnhoefe().get(bhf)).getGleiseRegex(), bahnsteig));
+               bahnsteig = var4.next();
+            } while(!Pattern.matches(this.config.getBahnhoefe().get(bhf).getGleiseRegex(), bahnsteig));
 
-            Iterator var6 = this.listener.iterator();
-
-            while(var6.hasNext()) {
-               StsListener callback = (StsListener)var6.next();
-               callback.bahnsteigSetup(bahnsteig, (Bahnhof)this.config.getBahnhoefe().get(bhf));
+            for (StsListener callback : this.listener) {
+               callback.bahnsteigSetup(bahnsteig, this.config.getBahnhoefe().get(bhf));
             }
          }
       }
@@ -92,11 +89,9 @@ public class PluginClientImpl extends PluginClient {
    }
 
    protected void response_zugliste(HashMap<Integer, String> zl) {
-      this.zuegeZuVerarbeiten = new HashSet(zl.keySet());
-      Iterator var2 = zl.keySet().iterator();
+      this.zuegeZuVerarbeiten = new HashSet<>(zl.keySet());
 
-      while(var2.hasNext()) {
-         int zid = (Integer)var2.next();
+      for (int zid : zl.keySet()) {
          this.request_zugdetails(zid);
       }
 
@@ -113,21 +108,17 @@ public class PluginClientImpl extends PluginClient {
       try {
          this.currentCache.getFahrplaene().put(zid, plan);
          this.zuegeZuVerarbeiten.remove(zid);
-         Iterator var3 = plan.iterator();
 
-         while(var3.hasNext()) {
-            ZugFahrplanZeile zeile = (ZugFahrplanZeile)var3.next();
-            Iterator var5 = this.config.getBahnhoefe().iterator();
+         for (ZugFahrplanZeile zeile : plan) {
 
-            while(var5.hasNext()) {
-               Bahnhof bahnhof = (Bahnhof)var5.next();
+            for (Bahnhof bahnhof : this.config.getBahnhoefe()) {
                if (Pattern.matches(bahnhof.getGleiseRegex(), zeile.gleis)) {
-                  List<ZugBelegung> gleisBelegung = (List)this.currentCache.getBelegung().get(zeile.gleis);
+                  List<ZugBelegung> gleisBelegung = this.currentCache.getBelegung().get(zeile.gleis);
                   if (gleisBelegung == null) {
-                     gleisBelegung = new ArrayList();
+                     gleisBelegung = new ArrayList<>();
                   }
 
-                  ((List)gleisBelegung).add(new ZugBelegung((ZugDetails)this.currentCache.getDetailCache().get(zid), zeile));
+                  gleisBelegung.add(new ZugBelegung(this.currentCache.getDetailCache().get(zid), zeile));
                   this.currentCache.getBelegung().put(zeile.gleis, gleisBelegung);
                }
             }
@@ -142,6 +133,7 @@ public class PluginClientImpl extends PluginClient {
             while(true) {
                boolean zugVorhanden;
                Iterator var10;
+
                String gleis;
                label79:
                do {
@@ -160,10 +152,10 @@ public class PluginClientImpl extends PluginClient {
                   }
 
                   gleis = (String)var15.next();
-                  List<ZugBelegung> gleisBelegung = (List)this.currentCache.getBelegung().get(gleis);
+                  List<ZugBelegung> gleisBelegung = this.currentCache.getBelegung().get(gleis);
                   zugVorhanden = false;
                   if (gleisBelegung != null) {
-                     Collections.sort(gleisBelegung, new ZugBelegung.DelayComparator());
+                     gleisBelegung.sort(new ZugBelegung.DelayComparator());
                      var10 = gleisBelegung.iterator();
 
                      ZugBelegung zugBelegung;
@@ -193,7 +185,7 @@ public class PluginClientImpl extends PluginClient {
             }
          }
       } catch (Exception var12) {
-         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, (String)null, var12);
+         Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, var12);
       }
 
    }
@@ -201,39 +193,39 @@ public class PluginClientImpl extends PluginClient {
    protected void response_ereignis(int zid, String art, ZugDetails zugDetails) {
       this.currentCache.getDetailCache().put(zid, zugDetails);
       Bahnhof bahnhof;
-      Iterator var5;
+      Iterator<StsListener> var5;
       StsListener callback;
       if (art.equals("ankunft")) {
-         if (((ZugDetails)this.currentCache.getDetailCache().get(zid)).sichtbar && ((ZugDetails)this.currentCache.getDetailCache().get(zid)).amgleis && this.isTrainStopping(zid, ((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis)) {
-            bahnhof = this.getBahnhofByGleis(((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis);
-            if (bahnhof != null && (!this.haltGemeldet.containsKey(((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis) || !((Set)this.haltGemeldet.get(((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis)).contains(((ZugDetails)this.currentCache.getDetailCache().get(zid)).name))) {
-               this.einfahrtsGleise.put(zid, ((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis);
+         if (this.currentCache.getDetailCache().get(zid).sichtbar && this.currentCache.getDetailCache().get(zid).amgleis && this.isTrainStopping(zid, this.currentCache.getDetailCache().get(zid).gleis)) {
+            bahnhof = this.getBahnhofByGleis(this.currentCache.getDetailCache().get(zid).gleis);
+            if (bahnhof != null && (!this.haltGemeldet.containsKey(this.currentCache.getDetailCache().get(zid).gleis) || !this.haltGemeldet.get(this.currentCache.getDetailCache().get(zid).gleis).contains(this.currentCache.getDetailCache().get(zid).name))) {
+               this.einfahrtsGleise.put(zid, this.currentCache.getDetailCache().get(zid).gleis);
                var5 = this.listener.iterator();
 
                while(var5.hasNext()) {
-                  callback = (StsListener)var5.next();
-                  if (!this.haltGemeldet.containsKey(((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis)) {
-                     this.haltGemeldet.put(((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis, new HashSet());
+                  callback = var5.next();
+                  if (!this.haltGemeldet.containsKey(this.currentCache.getDetailCache().get(zid).gleis)) {
+                     this.haltGemeldet.put(this.currentCache.getDetailCache().get(zid).gleis, new HashSet());
                   }
 
-                  ((Set)this.haltGemeldet.get(((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis)).add(((ZugDetails)this.currentCache.getDetailCache().get(zid)).name);
-                  callback.zugHalt(((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis, bahnhof, zid, this.currentCache);
+                  this.haltGemeldet.get(this.currentCache.getDetailCache().get(zid).gleis).add(this.currentCache.getDetailCache().get(zid).name);
+                  callback.zugHalt(this.currentCache.getDetailCache().get(zid).gleis, bahnhof, zid, this.currentCache);
                }
             }
          }
       } else if (art.equals("abfahrt") && this.einfahrtsGleise.get(zid) != null) {
-         bahnhof = this.getBahnhofByGleis((String)this.einfahrtsGleise.get(zid));
-         if (bahnhof != null && (!this.abfahrtGemeldet.containsKey(this.einfahrtsGleise.get(zid)) || !((Set)this.abfahrtGemeldet.get(this.einfahrtsGleise.get(zid))).contains(((ZugDetails)this.currentCache.getDetailCache().get(zid)).name))) {
+         bahnhof = this.getBahnhofByGleis(this.einfahrtsGleise.get(zid));
+         if (bahnhof != null && (!this.abfahrtGemeldet.containsKey(this.einfahrtsGleise.get(zid)) || !this.abfahrtGemeldet.get(this.einfahrtsGleise.get(zid)).contains(this.currentCache.getDetailCache().get(zid).name))) {
             var5 = this.listener.iterator();
 
             while(var5.hasNext()) {
-               callback = (StsListener)var5.next();
+               callback = var5.next();
                if (!this.abfahrtGemeldet.containsKey(this.einfahrtsGleise.get(zid))) {
                   this.abfahrtGemeldet.put(this.einfahrtsGleise.get(zid), new HashSet());
                }
 
-               ((Set)this.abfahrtGemeldet.get(this.einfahrtsGleise.get(zid))).add(((ZugDetails)this.currentCache.getDetailCache().get(zid)).name);
-               callback.zugAbfahrt((String)this.einfahrtsGleise.get(zid), bahnhof, zid, this.currentCache);
+               this.abfahrtGemeldet.get(this.einfahrtsGleise.get(zid)).add(this.currentCache.getDetailCache().get(zid).name);
+               callback.zugAbfahrt(this.einfahrtsGleise.get(zid), bahnhof, zid, this.currentCache);
             }
          }
       }
@@ -243,10 +235,8 @@ public class PluginClientImpl extends PluginClient {
    public void naechsterZug(int zid, String gleis) {
       if (this.currentCache.getDetailCache().get(zid) != null) {
          Bahnhof bahnhof = null;
-         Iterator var4 = this.config.getBahnhoefe().iterator();
 
-         while(var4.hasNext()) {
-            Bahnhof bhf = (Bahnhof)var4.next();
+         for (Bahnhof bhf : this.config.getBahnhoefe()) {
             if (Pattern.matches(bhf.getGleiseRegex(), gleis)) {
                bahnhof = bhf;
                break;
@@ -254,24 +244,24 @@ public class PluginClientImpl extends PluginClient {
          }
 
          if (bahnhof != null) {
-            var4 = this.listener.iterator();
+            Iterator<StsListener> var4 = this.listener.iterator();
 
             StsListener callback;
             while(var4.hasNext()) {
-               callback = (StsListener)var4.next();
+               callback = var4.next();
                callback.naechsterZug(gleis, bahnhof, zid, this.currentCache);
             }
 
-            if (((ZugDetails)this.currentCache.getDetailCache().get(zid)).sichtbar && ((ZugDetails)this.currentCache.getDetailCache().get(zid)).gleis.equals(gleis) && (!this.einfahrtGemeldet.containsKey(gleis) || !((Set)this.einfahrtGemeldet.get(gleis)).contains(((ZugDetails)this.currentCache.getDetailCache().get(zid)).name))) {
+            if (this.currentCache.getDetailCache().get(zid).sichtbar && this.currentCache.getDetailCache().get(zid).gleis.equals(gleis) && (!this.einfahrtGemeldet.containsKey(gleis) || !this.einfahrtGemeldet.get(gleis).contains(this.currentCache.getDetailCache().get(zid).name))) {
                var4 = this.listener.iterator();
 
                while(var4.hasNext()) {
-                  callback = (StsListener)var4.next();
+                  callback = var4.next();
                   if (!this.einfahrtGemeldet.containsKey(gleis)) {
-                     this.einfahrtGemeldet.put(gleis, new HashSet());
+                     this.einfahrtGemeldet.put(gleis, new HashSet<>());
                   }
 
-                  ((Set)this.einfahrtGemeldet.get(gleis)).add(((ZugDetails)this.currentCache.getDetailCache().get(zid)).name);
+                  this.einfahrtGemeldet.get(gleis).add(this.currentCache.getDetailCache().get(zid).name);
                   callback.zugEinfahrt(gleis, bahnhof, zid, this.currentCache);
                }
             }
@@ -281,7 +271,7 @@ public class PluginClientImpl extends PluginClient {
    }
 
    private Bahnhof getBahnhofByGleis(String gleis) {
-      Iterator var2 = this.config.getBahnhoefe().iterator();
+      Iterator<Bahnhof> var2 = this.config.getBahnhoefe().iterator();
 
       Bahnhof bhf;
       do {
@@ -289,25 +279,25 @@ public class PluginClientImpl extends PluginClient {
             return null;
          }
 
-         bhf = (Bahnhof)var2.next();
+         bhf = var2.next();
       } while(!Pattern.matches(bhf.getGleiseRegex(), gleis));
 
       return bhf;
    }
 
    private boolean isTrainStopping(int zid, String gleis) {
-      Iterator var3 = ((List)this.currentCache.getFahrplaene().get(zid)).iterator();
+      Iterator<ZugFahrplanZeile> var3 = (this.currentCache.getFahrplaene().get(zid)).iterator();
       if (!var3.hasNext()) {
          return false;
       } else {
-         ZugFahrplanZeile zeile = (ZugFahrplanZeile)var3.next();
+         ZugFahrplanZeile zeile = var3.next();
          return zeile.gleis.equals(gleis) && !zeile.flags.hasFlag('D');
       }
    }
 
    public void haltGemeldet(int zid, String gleis) {
       if (this.haltGemeldet.containsKey(gleis)) {
-         ((Set)this.haltGemeldet.get(gleis)).add(((ZugDetails)this.currentCache.getDetailCache().get(zid)).name);
+         this.haltGemeldet.get(gleis).add(this.currentCache.getDetailCache().get(zid).name);
       }
 
    }

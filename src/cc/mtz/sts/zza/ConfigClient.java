@@ -9,7 +9,7 @@ import js.java.stspluginlib.PluginClient.ZugDetails;
 import js.java.stspluginlib.PluginClient.ZugFahrplanZeile;
 
 public class ConfigClient extends PluginClient {
-   private Set<String> bahnsteige = new HashSet();
+   private Set<String> bahnsteige = new HashSet<>();
 
    public ConfigClient(String name, String author, String version, String text) {
       super(name, author, version, text);
